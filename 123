@@ -1,0 +1,53 @@
+import random
+
+class SuperNim:
+    def __init__(self, rows=5, cols=5):
+        self.rows = rows
+        self.cols = cols
+        self.board = self.initialize_board()
+        self.current_player = 1
+
+    def initialize_board(self):
+        return [[random.randint(0, 3) for _ in range(self.cols)] for _ in range(self.rows)]
+
+    def print_board(self):
+        print("Текущее состояние поля:")
+        for row in self.board:
+            print(" | ".join(str(x) for x in row))
+        print("\n")
+
+    def is_game_over(self):
+        return all(cell == 0 for row in self.board for cell in row)
+
+    def make_move(self, choice):
+        if choice[0] == 'r': 
+            row = int(choice[1:])
+            if 0 <= row < self.rows:
+                self.board[row] = [0] * self.cols
+            else:
+                print("Некорректный номер ряда.")
+        elif choice[0] == 'c': 
+            col = int(choice[1:])
+            if 0 <= col < self.cols:
+                for row in range(self.rows):
+                    self.board[row][col] = 0
+            else:
+                print("Некорректный номер столбца.")
+
+    def switch_player(self):
+        self.current_player = 1 if self.current_player == 2 else 2
+    def play(self):
+        while not self.is_game_over():
+            self.print_board()
+            move = input(f"Игрок {self.current_player}, введите ваш ход (например, r0 для ряда 0 или c2 для столбца 2): ")
+            if move.startswith(('r', 'c')) and len(move) > 1 and move[1:].isdigit():
+                self.make_move(move)
+                self.switch_player()
+            else:
+                print("Некорректный ввод. Пожалуйста, попробуйте снова.")
+
+        winner = 1 if self.current_player == 2 else 2  # последний ход завершил игру, поэтому победитель - другой игрок
+        print(f"Поздравляем, Игрок {winner}! Вы выиграли!")
+if __name__ == "__main__":
+    game = SuperNim()
+    game.play()
